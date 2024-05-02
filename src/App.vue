@@ -9,7 +9,10 @@
       :class="['box', { 'move': box.moving, 'bomb': !box.test, 'flower': box.test }]" 
       @click="handleBoxClick(box)"
       :style="boxStyle(box)" 
-    />
+    >
+      <FlowerComponent v-if="box.test" />
+      <BombComponent v-else />
+    </div>
   </div>
 
   <EndPage v-if="seconds === 0" :score="score" @restart="restartGame" />
@@ -17,11 +20,15 @@
 
 <script>
 import EndPage from './components/EndPage.vue';
+import FlowerComponent from './components/FlowerComponent.vue';
+import BombComponent from './components/BombComponent.vue';
 
 export default {
   name: 'App',
   components: {
-    EndPage
+    EndPage,
+    FlowerComponent,
+    BombComponent
   },
   data() {
     return {
@@ -65,8 +72,6 @@ export default {
         height: `${box.size}px`,
         left: `${box.position}px`,
         transition: `transform ${box.velocity}ms linear`,
-        backgroundImage: `url('${box.image}')`,
-        backgroundSize: 'contain'
       };
     },
     handleBoxClick(box) {
@@ -77,11 +82,10 @@ export default {
       console.log(this.$refs.game);
       if (this.$refs.game) {
         const length = this.random(100, this.$refs.game.clientWidth - 100);
-        const velocity = this.random(850, 8000);
+        const velocity = this.random(850, 5000);
         const size = this.random(50, 150);
         const test = Math.round(Math.random());
-        const image = test ? './flower.png' : './bomb.png';
-        const box = { id: Math.random(), size, position: length, velocity, test, image, moving: false };
+        const box = { id: Math.random(), size, position: length, velocity, test, moving: false };
 
         this.boxes.push(box);
         
@@ -134,13 +138,22 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+img {
+  /* Disattiva il trascinamento delle immagini e la selezione */
+  -webkit-user-drag: none;
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 #game{
   background: #efefef;
   width:100%;
-  height:750px;
+  height:100dvh;
   position: relative;
   overflow: hidden;
 }
@@ -156,7 +169,7 @@ export default {
 }
 
 .box{
-  
+  will-change: transform; /* informa il browser di aspettarsi cambiamenti su un elemento */
   width: 100px;
   height:100px;
   position:absolute;
