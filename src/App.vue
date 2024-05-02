@@ -53,7 +53,7 @@ export default {
     restartGame() {
       // Reset delle variabili di gioco
       this.score = 0;  // Resetta il punteggio
-      this.seconds = 90;  // Reimposta il timer del gioco
+      this.seconds = 95;  // Reimposta il timer del gioco
       this.boxes = [];  // Svuota l'array dei box
 
       // Riavvia il gioco
@@ -111,54 +111,6 @@ export default {
         console.error('Game element is not yet available');
       }
     },
-    // dropBox() {
-    //   if (this.$refs.game) {
-    //     const length = this.random(100, this.$refs.game.clientWidth - 100);
-    //     const velocity = this.random(850, 4000);  // questa potrebbe essere modificata per essere più rappresentativa
-    //     const size = this.random(50, 150);
-    //     const test = Math.round(Math.random());
-    //     const box = {
-    //       id: Math.random(),
-    //       size,
-    //       position: length,
-    //       velocity,
-    //       test,
-    //       startY: -150,  // Start above the viewport
-    //       endY: window.innerHeight + 150,  // End below the viewport
-    //       moving: true,
-    //       currentY: -150
-    //     };
-
-    //     this.boxes.push(box);
-    //     this.animateBox(box);
-    //   } else {
-    //     console.error('Game element is not yet available');
-    //   }
-    // },
-
-    // animateBox(box) {
-    //   const distance = box.endY - box.startY;
-    //   const duration = distance / (box.velocity / 1000);
-    //   console.log(`Animating box from ${box.startY} to ${box.endY} over ${duration}ms`);
-
-    //   const startTime = performance.now();
-    //   const animate = () => {
-    //     const elapsedTime = performance.now() - startTime;
-    //     const progress = elapsedTime / duration;
-    //     if (progress < 1) {
-    //       box.currentY = box.startY + progress * distance;
-    //       const boxElement = document.getElementById(`box-${box.id}`);
-    //       if (boxElement) {
-    //         boxElement.style.transform = `translateY(${box.currentY}px)`;
-    //       }
-    //       requestAnimationFrame(animate);
-    //     } else {
-    //       this.boxes = this.boxes.filter(b => b.id !== box.id);
-    //     }
-    //   };
-
-    //   requestAnimationFrame(animate);
-    // },
 
     runGame() {
       this.gameInterval = setInterval(() => {
