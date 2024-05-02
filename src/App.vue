@@ -50,7 +50,6 @@ export default {
       this.countdown();  // Riavvia il countdown del gioco
       this.runGame();  // Riavvia la generazione dei box
 
-      // Si potrebbe aver bisogno di fermare il ciclo di gioco corrente prima di riavviarlo
       clearInterval(this.gameInterval);  // Ferma l'intervallo di gioco attuale per evitare duplicazioni
 
       // Imposta nuovamente l'intervallo di gioco
