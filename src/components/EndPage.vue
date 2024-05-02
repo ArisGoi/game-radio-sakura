@@ -1,7 +1,7 @@
 <template>
   <div class="end-page">
     <h1>Game Over</h1>
-    <p>Your score: {{ score }}</p>
+    <p>Your score: {{ score }} points</p>
     <button @click="restartGame">Restart</button>
   </div>
 </template>
