@@ -1,33 +1,32 @@
 <template>
-  <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-  <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-
-  <div id="game" ref="game">
+  <div id="game" ref="game" v-if="seconds !=0">
     <div class="counter" id="counter">{{ formattedTime }}</div>
     <div class="score">{{ score }}</div>
 
     <div 
       v-for="box in boxes" 
       :key="box.id" 
-      :class="['box', { 'move': box.moving }]" 
+      :class="['box', { 'move': box.moving, 'bomb': !box.test, 'flower': box.test }]" 
       @click="handleBoxClick(box)"
       :style="boxStyle(box)" 
     />
-
   </div>
+
+  <EndPage v-if="seconds === 0" :score="score" @restart="restartGame" />
 </template>
 
 <script>
+import EndPage from './components/EndPage.vue';
 
 export default {
   name: 'App',
   components: {
-    // FlowerObject
+    EndPage
   },
   data() {
     return {
       score: 0,
-      seconds: 60,
+      seconds: 90,
       boxes: [],
       gameInterval: null
     };
@@ -40,6 +39,26 @@ export default {
   methods: {
     random(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
+    },
+    restartGame() {
+      // Reset delle variabili di gioco
+      this.score = 0;  // Resetta il punteggio
+      this.seconds = 90;  // Reimposta il timer del gioco
+      this.boxes = [];  // Svuota l'array dei box
+
+      // Riavvia il gioco
+      this.countdown();  // Riavvia il countdown del gioco
+      this.runGame();  // Riavvia la generazione dei box
+
+      // Si potrebbe aver bisogno di fermare il ciclo di gioco corrente prima di riavviarlo
+      clearInterval(this.gameInterval);  // Ferma l'intervallo di gioco attuale per evitare duplicazioni
+
+      // Imposta nuovamente l'intervallo di gioco
+      this.gameInterval = setInterval(() => {
+        for (let i = 0; i < 10; i++) {
+          this.dropBox();
+        }
+      }, 5000);
     },
     boxStyle(box) {
       return {
@@ -59,15 +78,23 @@ export default {
       console.log(this.$refs.game);
       if (this.$refs.game) {
         const length = this.random(100, this.$refs.game.clientWidth - 100);
-        const velocity = this.random(850, 10000);
+        const velocity = this.random(850, 8000);
         const size = this.random(50, 150);
         const test = Math.round(Math.random());
         const image = test ? './flower.png' : './bomb.png';
         const box = { id: Math.random(), size, position: length, velocity, test, image, moving: false };
+
         this.boxes.push(box);
+        
         setTimeout(() => {
           box.moving = true;
         }, this.random(0, 5000));
+
+        // Calcolo quando il box esce dal campo visivo
+        const transitionDuration = velocity + 5000; // 5000 = buffer di sicurezza
+        setTimeout(() => {
+          this.boxes = this.boxes.filter(b => b.id !== box.id);
+        }, transitionDuration);
       } else {
         console.error('Game element is not yet available');
       }
@@ -85,7 +112,7 @@ export default {
           this.seconds--;
           setTimeout(tick, 1000);
         } else {
-          alert('Game over');
+          // alert('Game over');
           clearInterval(this.gameInterval);
         }
       };
