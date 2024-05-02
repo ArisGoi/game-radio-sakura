@@ -5,6 +5,7 @@
 
     <div 
       v-for="box in boxes" 
+      :id="`box-${box.id}`"
       :key="box.id" 
       :class="['box', { 'move': box.moving, 'bomb': !box.test, 'flower': box.test }]" 
       @click="handleBoxClick(box)"
@@ -22,6 +23,7 @@
 import EndPage from './components/EndPage.vue';
 import FlowerComponent from './components/FlowerComponent.vue';
 import BombComponent from './components/BombComponent.vue';
+import debounce from 'lodash/debounce';
 
 export default {
   name: 'App',
@@ -47,6 +49,7 @@ export default {
     random(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
+
     restartGame() {
       // Reset delle variabili di gioco
       this.score = 0;  // Resetta il punteggio
@@ -66,6 +69,7 @@ export default {
         }
       }, 5000);
     },
+
     boxStyle(box) {
       return {
         width: `${box.size}px`,
@@ -74,16 +78,21 @@ export default {
         transition: `transform ${box.velocity}ms linear`,
       };
     },
-    handleBoxClick(box) {
+
+    handleBoxClick: debounce(function(box) {
       this.score += box.test ? 1 : -1;
       this.boxes = this.boxes.filter(b => b.id !== box.id);
-    },
+    }, 100, {
+      'leading': true,
+      'trailing': false
+    }),
+
     dropBox() {
       console.log(this.$refs.game);
       if (this.$refs.game) {
         const length = this.random(100, this.$refs.game.clientWidth - 100);
-        const velocity = this.random(850, 5000);
-        const size = this.random(50, 150);
+        const velocity = this.random(900, 10000);
+        const size = this.random(50, 120);
         const test = Math.round(Math.random());
         const box = { id: Math.random(), size, position: length, velocity, test, moving: false };
 
@@ -102,6 +111,55 @@ export default {
         console.error('Game element is not yet available');
       }
     },
+    // dropBox() {
+    //   if (this.$refs.game) {
+    //     const length = this.random(100, this.$refs.game.clientWidth - 100);
+    //     const velocity = this.random(850, 4000);  // questa potrebbe essere modificata per essere più rappresentativa
+    //     const size = this.random(50, 150);
+    //     const test = Math.round(Math.random());
+    //     const box = {
+    //       id: Math.random(),
+    //       size,
+    //       position: length,
+    //       velocity,
+    //       test,
+    //       startY: -150,  // Start above the viewport
+    //       endY: window.innerHeight + 150,  // End below the viewport
+    //       moving: true,
+    //       currentY: -150
+    //     };
+
+    //     this.boxes.push(box);
+    //     this.animateBox(box);
+    //   } else {
+    //     console.error('Game element is not yet available');
+    //   }
+    // },
+
+    // animateBox(box) {
+    //   const distance = box.endY - box.startY;
+    //   const duration = distance / (box.velocity / 1000);
+    //   console.log(`Animating box from ${box.startY} to ${box.endY} over ${duration}ms`);
+
+    //   const startTime = performance.now();
+    //   const animate = () => {
+    //     const elapsedTime = performance.now() - startTime;
+    //     const progress = elapsedTime / duration;
+    //     if (progress < 1) {
+    //       box.currentY = box.startY + progress * distance;
+    //       const boxElement = document.getElementById(`box-${box.id}`);
+    //       if (boxElement) {
+    //         boxElement.style.transform = `translateY(${box.currentY}px)`;
+    //       }
+    //       requestAnimationFrame(animate);
+    //     } else {
+    //       this.boxes = this.boxes.filter(b => b.id !== box.id);
+    //     }
+    //   };
+
+    //   requestAnimationFrame(animate);
+    // },
+
     runGame() {
       this.gameInterval = setInterval(() => {
         for (let i = 0; i < 10; i++) {
@@ -124,8 +182,12 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.countdown();
-      this.runGame();
+      if (this.$refs.game) {
+        this.countdown();
+        this.runGame();
+      } else {
+        console.error('Game element is not yet available');
+      }
     });
   }
 }
@@ -140,6 +202,12 @@ export default {
   color: #2c3e50;
 }
 
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+}
+
 img {
   /* Disattiva il trascinamento delle immagini e la selezione */
   -webkit-user-drag: none;
@@ -152,6 +220,10 @@ img {
 
 #game{
   background: #efefef;
+  background-image: url('@/assets/cover.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   width:100%;
   height:100dvh;
   position: relative;
@@ -159,28 +231,36 @@ img {
 }
 
 .score{
-  font-size: 500px;
+  font-size: 300px;
+  opacity: .7;
   z-index: 20;
   font-family: arial;
-  color: #d7e4d9;
+  color: #daa5bd;
   user-select:none;
   width:100%;
   text-align:center;
+  margin-top: 140px;
 }
 
 .box{
-  will-change: transform; /* informa il browser di aspettarsi cambiamenti su un elemento */
-  width: 100px;
-  height:100px;
+  will-change: transform;
+  width: 120px;
+  height: 120px;
+  padding: 20px;
+  margin: -20px;
   position:absolute;
-  top: -150px;
+  top: -140px;
   transition: transform 1.5s linear;
   cursor: pointer;
   z-index:100;
 }
 
+.box.flower{
+  z-index: 1000;
+}
+
 .move{
-  transform:translateY(120vh);
+  transform: translateY(120vh);
 }
 
 .counter{
