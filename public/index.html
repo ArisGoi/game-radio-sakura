@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="" style="overflow: hidden;">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#E5F3F4">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
@@ -13,5 +14,21 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+
+    <!-- Previene lo zoom con double-tap su mobile -->
+    <script>
+
+      const content = document.getElementById('content');
+
+      content.addEventListener('touchstart', handleTouchStart, false);
+      content.addEventListener('touchend', handleTouchEnd, false);
+
+      function handleTouchStart(event) {
+        event.preventDefault();
+      }
+      function handleTouchEnd(event) {
+        event.preventDefault();
+      }
+    </script>
   </body>
 </html>

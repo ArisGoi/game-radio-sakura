@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  <EndPage v-if="seconds === 0" :score="score" @restart="restartGame" />
+  <EndPage v-if="seconds === 0" :score="score" :highScore="highScore" @restart="restartGame" />
 </template>
 
 <script>
@@ -35,9 +35,10 @@ export default {
   data() {
     return {
       score: 0,
-      seconds: 90,
+      seconds: 98,
       boxes: [],
-      gameInterval: null
+      gameInterval: null,
+      highScore: this.getCookie('maxScore') || 0,
     };
   },
   computed: {
@@ -53,7 +54,7 @@ export default {
     restartGame() {
       // Reset delle variabili di gioco
       this.score = 0;  // Resetta il punteggio
-      this.seconds = 95;  // Reimposta il timer del gioco
+      this.seconds = 98;  // Reimposta il timer del gioco
       this.boxes = [];  // Svuota l'array dei box
 
       // Riavvia il gioco
@@ -125,12 +126,28 @@ export default {
           this.seconds--;
           setTimeout(tick, 1000);
         } else {
-          // alert('Game over');
+          this.endGame();
           clearInterval(this.gameInterval);
         }
       };
       tick();
-    }
+    },
+
+    getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    },
+
+    endGame() {
+      if (!this.getCookie('maxScore')) {
+        document.cookie = 'maxScore=0;path=/;max-age=31536000'; // Salva per 1 anno
+      }
+      if (this.score > this.maxScore) {
+        this.highScore = this.score;
+        document.cookie = `maxScore=${this.score};path=/;max-age=31536000`; // Salva per 1 anno
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -140,6 +157,8 @@ export default {
       } else {
         console.error('Game element is not yet available');
       }
+
+      this.maxScore = this.getCookie('maxScore') || 0;
     });
   }
 }
