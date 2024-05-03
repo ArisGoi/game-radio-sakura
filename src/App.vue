@@ -93,7 +93,7 @@ export default {
       if (this.$refs.game) {
         const length = this.random(100, this.$refs.game.clientWidth - 100);
         const velocity = this.random(900, 10000);
-        const size = this.random(45, 100);
+        const size = this.random(50, 80);
         const test = Math.round(Math.random());
         const box = { id: Math.random(), size, position: length, velocity, test, moving: false };
 
@@ -218,8 +218,6 @@ img {
   will-change: transform;
   width: 120px;
   height: 120px;
-  padding: 20px;
-  margin: -20px;
   position:absolute;
   top: -140px;
   transition: transform 1.5s linear;

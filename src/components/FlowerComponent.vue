@@ -29,10 +29,16 @@ export default {
 .flower {
   filter: drop-shadow(0 0 8px #0000002a);
   animation: rotate 5s linear infinite;
+  box-sizing: border-box;
+  height: calc(100% + 20px);
+  width: calc(100% + 20px);
+  padding: 20px;
+  margin: -20px;
 }
 .flower img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 @keyframes rotate {
