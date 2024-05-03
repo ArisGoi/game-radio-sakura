@@ -93,7 +93,7 @@ export default {
       if (this.$refs.game) {
         const length = this.random(100, this.$refs.game.clientWidth - 100);
         const velocity = this.random(900, 10000);
-        const size = this.random(50, 120);
+        const size = this.random(45, 100);
         const test = Math.round(Math.random());
         const box = { id: Math.random(), size, position: length, velocity, test, moving: false };
 
@@ -211,6 +211,7 @@ img {
   width:100%;
   text-align:center;
   margin-top: 140px;
+  filter: drop-shadow(0 0 12px #ffffff6b);
 }
 
 .box{
@@ -222,6 +223,8 @@ img {
   position:absolute;
   top: -140px;
   transition: transform 1.5s linear;
+  transition: opacity .5s linear;
+  opacity: 0;
   cursor: pointer;
   z-index:100;
 }
@@ -232,19 +235,21 @@ img {
 
 .move{
   transform: translateY(120vh);
+  opacity: 1;
 }
 
 .counter{
   width:100%;
   margin: 0 auto;
   text-align:center;
-  font-family:arial;
-  color:red;
+  color: #a54e75;
   font-weight:bold;
   padding-top:10px;
-  font-size:20px;
+  font-size: 30px;
   position:relative;
   z-index:9999;
+  font-weight: 900;
+  filter: drop-shadow(0 0 4px #ffffff);
 }
 
 </style>
