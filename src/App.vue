@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       score: 0,
-      seconds: 98,
+      seconds: 60,
       boxes: [],
       gameInterval: null,
       highScore: this.getCookie('maxScore') || 0,
